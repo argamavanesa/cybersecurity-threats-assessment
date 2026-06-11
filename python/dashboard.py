@@ -1,10 +1,14 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+from pathlib import Path
 
 st.set_page_config(layout="wide", page_title="Cybersecurity Threat Assessment")
 
-df = pd.read_csv('/data/raw-data.csv')
+BASE_DIR = Path(__file__).resolve().parent
+csv_path = BASE_DIR.parent / "data" / "raw-data.csv"
+
+df = pd.read_csv(csv_path)
 df['Financial Loss (in Billion $)'] = df['Financial Loss (in Million $)'] / 1000
 
 # ==========================================
