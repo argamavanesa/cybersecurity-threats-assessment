@@ -1,5 +1,8 @@
 # Cybersecurity Threats Assessment
 
+![Dashboard Demo](assets/streamlit-dashboard.gif)
+
+
 ## Overview
 
 Serangan siber menjadi salah satu ancaman utama bagi organisasi modern karena dapat menyebabkan kerugian finansial, gangguan operasional, serta risiko keamanan informasi. Proyek ini bertujuan untuk menganalisis pola serangan siber global, membangun kerangka penilaian risiko (*risk assessment*), serta mengevaluasi kemampuan model machine learning dalam memprediksi kategori risiko serangan berdasarkan karakteristik serangan yang tersedia pada dataset.
@@ -88,7 +91,6 @@ Dashboard interaktif tersedia di:
 
 https://global-cybersecurity-threats-assessment.streamlit.app/
 
-> 📽️ *[Tambahkan GIF atau screen recording dashboard di sini]*
 
 ### Insight dari Dashboard
 
