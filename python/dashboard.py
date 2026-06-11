@@ -4,7 +4,7 @@ import plotly.express as px
 
 st.set_page_config(layout="wide", page_title="Cybersecurity Threat Assessment")
 
-df = pd.read_csv('../data/raw-data.csv')
+df = pd.read_csv('/data/raw-data.csv')
 df['Financial Loss (in Billion $)'] = df['Financial Loss (in Million $)'] / 1000
 
 # ==========================================
