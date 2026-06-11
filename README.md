@@ -2,16 +2,22 @@
 
 ## Research Questions
 1. Bagaimana distribusi pola serangan siber berdasarkan negara, jenis serangan, dan industri yang menjadi target?
-2. Faktor-faktor apa saja yang membentuk skor risiko (risk score) suatu serangan siber?
-3. Apakah kategori risiko serangan (Low/Medium/High) dapat diprediksi secara andal dari fitur-fitur yang tersedia menggunakan model klasifikasi machine learning?
+2. Faktor-faktor apa saja yang membentuk skor risiko (risk score) suatu serangan siber, dan bagaimana cara mengkuantifikasinya dari fitur-fitur yang tersedia?
+3. Seberapa andal kategori risiko serangan (Low/Medium/High) dapat diprediksi dari ciri-ciri serangan yang ada dalam dataset — seperti negara, jenis serangan, industri target, sumber serangan, dan jenis kerentanan — menggunakan model klasifikasi machine learning, dan apa saja keterbatasan prediktifnya?
+
+---
 
 ## Data Quality Logs
 * Tidak ditemukan adanya missing value, tipe data yang salah, nilai data yang mencurigakan, maupun duplikasi data.
 * Dataset siap digunakan untuk analisis tanpa preprocessing tambahan.
 * Fitur `Year` tidak akan dikonversi menjadi date karena pada konteks ini hanya penanda tahun serangan terjadi.
 
+---
+
 ## Tujuan EDA & Modelling
 Exploratory Data Analysis ini digunakan untuk menggali pola dan insight dari data serta melakukan feature engineering untuk Model Prediksi yaitu Klasifikasi dengan beberapa metode seperti XGBoost, Decision Tree, dan Random Forest Classifier. Klasifikasi ini akan memprediksi Kategori Risiko suatu Serangan (Low/Medium/High) berdasarkan Country, Attack Type, Target Industry, Financial Loss (in Million $), Number of Affected Users, Attack Source, Security Vulnerability Type, Defense Mechanism Used, dan Incident Resolution Time (in Hours).
+
+---
 
 ## Insight dari Data
 1. Data asli memiliki 10 kolom yang mencakup: Country, Year, Attack Type, Target Industry, Financial Loss (in Million $), Number of Affected Users, Attack Source, Security Vulnerability Type, Defense Mechanism Used, Incident Resolution Time (in Hours) dan berdasarkan pengecekan awal data sudah bersih untuk dilakukan EDA.
@@ -22,6 +28,8 @@ Exploratory Data Analysis ini digunakan untuk menggali pola dan insight dari dat
 6. Dilakukan agregasi secara count untuk membentuk `attack_likelihood` yang merepresentasikan peluang munculnya suatu pola serangan berdasarkan kombinasi unik Country × Attack Type × Target Industry × Attack Source × Security Vulnerability Type. Pemilihan kelima fitur ini didasarkan pada perspektif penyerang (*attacker's perspective*) — Country mencerminkan asal dan target geografis, Attack Type mencerminkan metode yang digunakan, Target Industry mencerminkan sektor yang disasar, Attack Source mencerminkan vektor serangan, dan Security Vulnerability Type mencerminkan celah yang dieksploitasi. Likelihood dihitung sebagai frekuensi relatif (count/total rows) dari setiap kombinasi unik kelima fitur tersebut.
 7. `attack_likelihood` di-merge kembali ke dataset utama.
 8. Dihitung skor risiko dimana risk_score = impact_score $\times$ likelihood, kemudian divisualisasikan distribusinya beserta batas kuantil 1/3 dan 2/3. Pembagian berdasarkan quantile dipilih untuk memastikan distribusi label Low/Medium/High yang seimbang (~33% tiap kelas), yang penting untuk training model klasifikasi.
+
+---
 
 ## Research Findings
 
@@ -42,7 +50,31 @@ Hyperparameter tuning pada RandomForest (36 kombinasi, 5-fold CV) menghasilkan b
 ### Keterbatasan Model
 Performa model plateau di kisaran 51–55% mengindikasikan bahwa fitur-fitur yang tersedia memiliki sinyal prediktif yang terbatas terhadap Risk Category. Hal ini konsisten dengan temuan EDA bahwa seluruh fitur numerik berdistribusi uniform dan distribusi fitur kategorik hampir seimbang antar kelas. Label Risk Category yang dibentuk dari risk_score mengandung informasi dari fitur-fitur yang sengaja di-drop untuk mencegah leakage, sehingga model memprediksi label dari sinyal yang secara matematis lebih lemah. Ini adalah trade-off yang disadari dalam desain eksperimen ini dan relevan sebagai temuan untuk pengembangan sistem deteksi risiko ke depannya.
 
+---
+
 ## Dashboard
+
+Dashboard interaktif tersedia di: [https://global-cybersecurity-threats-assessment.streamlit.app/](https://global-cybersecurity-threats-assessment.streamlit.app/)
+
+> 📽️ *[Placeholder: tambahkan GIF / screen recording dashboard di sini]*
+
+### Insight dari Dashboard
+
+**Financial Loss Overview**
+
+Financial Loss per Industri maupun per Negara menunjukkan distribusi yang sangat merata — selisih antara nilai tertinggi dan terendah kurang dari $5B untuk industri (IT ~$24B vs Education ~$20B) dan kurang dari $3B untuk negara (UK ~$16B vs China ~$13.71B). Hal ini mengindikasikan serangan siber tidak mengincar sektor atau wilayah tertentu secara spesifik, melainkan bersifat oportunistik dan tersebar luas.
+
+**Time Series Analysis**
+
+Jumlah serangan maupun rata-rata resolution time keduanya tidak menunjukkan tren yang konsisten — keduanya fluktuatif dari tahun ke tahun tanpa pola naik atau turun yang jelas. Attack count mencapai titik terendah di 2019 dan kembali memuncak di 2022, sementara resolution time bergerak dalam rentang sempit ~35.5–38.5 jam. Ini mengindikasikan bahwa faktor tahun tidak berpengaruh signifikan terhadap kedua metrik ini, konsisten dengan temuan EDA.
+
+**Attack Distribution**
+
+Distribusi Security Vulnerability Type hampir merata di keempat kategori (Zero-day 26.2%, Social Engineering 24.9%, Unpatched Software 24.6%, Weak Passwords 24.3%). Meski selisihnya kecil, Weak Passwords tetap dapat ditekan dengan menerapkan SPO password yang mewajibkan kombinasi karakter kuat dan penggantian berkala, sehingga berpotensi mengurangi ~24.3% vektor serangan yang seharusnya paling mudah dicegah.
+
+Dari sisi Attack Source, Insider threat menyumbang 25.1% — angka yang signifikan mengingat serangan dari dalam jauh lebih sulit dideteksi. Disarankan untuk melakukan pengecekan dan audit akses anggota instansi/organisasi secara berkala guna memitigasi risiko ini sejak dini.
+
+---
 
 ## Tools
 * Python
